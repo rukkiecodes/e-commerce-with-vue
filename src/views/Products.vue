@@ -71,8 +71,8 @@
                 </div>
 
                 <div class="form-group">
-                  <!-- <vue-editor v-model="product.description"></vue-editor> -->
-                  <textarea name="description" class="form-control" placeholder="Product description" v-model="product.description"></textarea>
+                  <vue-editor v-model="product.description"></vue-editor>
+                  <!-- <textarea name="description" class="form-control" placeholder="Product description" v-model="product.description"></textarea> -->
                 </div>
               </div>
 
@@ -115,11 +115,15 @@
 
 
 <script>
+import { VueEditor } from "vue2-editor";
 import { fb, db } from "../firebase.js";
 export default {
   name: "Products",
   props: {
     msg: String
+  },
+  components: {
+    VueEditor
   },
   data() {
     return {
@@ -146,11 +150,18 @@ export default {
       $('#product').modal('show');
     },
     updateProduct(){
-      
+      this.$firestore.products.doc(this.product.id).update(this.product);
+      Toast.fire({
+        type: 'success',
+        title: 'Updated  successfully'
+      })
+     $('#product').modal('hide');
     },
     editProduct(product) {
-      $('#product').modal('show');
       this.product = product;
+      this.modal = 'edit';
+      // this.activeItem = product['.key'];
+      $('#product').modal('show');
     },
     deleteProduct(doc) {
       Swal.fire({
@@ -177,6 +188,10 @@ export default {
     },
     addProduct() {
       this.$firestore.products.add(this.product);
+      Toast.fire({
+        type: 'success',
+        title: 'Product created  successfully'
+      })
       $('#product').modal('hide');
     }
   },
