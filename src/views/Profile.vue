@@ -97,9 +97,9 @@
                   </div>
                 </div>
 
-                <div class="col-md-8">
+                <div class="col-md-4">
                   <div class="form-group">
-                    <input type="file" @change="uploadImage" class="form-control">
+                    <input type="file" class="form-control">
                   </div>
                 </div>
 
@@ -109,11 +109,11 @@
                   </div>
                 </div>
 
-                <!-- <div class="col-md-4">
+                <div class="col-md-4">
                   <div class="form-group">
-                    <input type="button" value="Reset password email" class="btn btn-success w-100">
+                    <input type="button" @click="resetPassword" value="Reset password email" class="btn btn-success w-100">
                   </div>
-                </div> -->
+                </div>
               </div>
             </div>
           </div>
@@ -126,6 +126,7 @@
 <script>
 import { VueEditor } from "vue2-editor";
 import { fb, db } from '../firebase.js';
+import { constants } from 'crypto';
 export default {
   name: "profile",
   components: {
@@ -161,6 +162,18 @@ export default {
       }
   },
   methods:{
+    resetPassword(){
+      const auth = fb.auth();
+      auth.sendPasswordResetEmail(auth.currentUser.email).then(() => {
+        Toast.fire({
+        type: "success",
+        title: "Email  sent"
+      });
+      }).catch((error) => {
+        console.log(error);
+      })
+    },
+
     updateProfile(){
       this.$firestore.profile.update(this.profile);
     },
