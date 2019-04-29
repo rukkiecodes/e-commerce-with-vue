@@ -81,7 +81,7 @@
 
                   <div class="d-flex">
                     <p v-for="tag in product.tags">
-                      <span class="p1">{{ tag }}</span>
+                      <span class="p-1">{{ tag }}</span>
                     </p>
                   </div>
                 </div>
@@ -154,17 +154,21 @@ export default {
       let image = fb.storage().refFromURL(img);
 
       this.product.images.splice(index, 1);
-      
+
       image.delete().then(function(){
         console.log('image deleted');
       }).catch(function(error){
         console.log('an error occured');
       })
     },
+
+
     addTag() {
       this.product.tags.push(this.tag);
       this.tag = "";
     },
+
+
     uploadImage(e) {
       if (e.target.files[0]) {
         let file = e.target.files[0];
@@ -192,10 +196,24 @@ export default {
         );
       }
     },
+
+    reset(){
+      this.product = {
+        name: null,
+        description: null,
+        price: null,
+        tags: [],
+        images: []
+      }
+    },
+
     addNew() {
       this.modal = "new";
+      this.reset();
       $("#product").modal("show");
     },
+
+
     updateProduct() {
       this.$firestore.products.doc(this.product.id).update(this.product);
       Toast.fire({
@@ -204,12 +222,16 @@ export default {
       });
       $("#product").modal("hide");
     },
+
+
     editProduct(product) {
       this.product = product;
       this.modal = "edit";
       // this.activeItem = product['.key'];
       $("#product").modal("show");
     },
+
+
     deleteProduct(doc) {
       Swal.fire({
         title: "Are you sure?",
@@ -229,7 +251,11 @@ export default {
         }
       });
     },
+
+    
     readData() {},
+
+
     addProduct() {
       this.$firestore.products.add(this.product);
       Toast.fire({
