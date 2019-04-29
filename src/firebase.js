@@ -1,4 +1,5 @@
 import firebase from 'firebase';
+import 'firebase/storage'
 require("firebase/firestore");
 // Initialize Firebase
 var config = {

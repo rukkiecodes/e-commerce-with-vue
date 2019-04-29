@@ -85,12 +85,12 @@
               </div>
 
               <div class="form-group">
-                <input type="text" placeholder="Product tags" v-model="product.tag" class="form-control">
+                <input type="text" @keyup.188="addTag" placeholder="Product tags" v-model="tag" class="form-control">
               </div>
 
               <div class="form-group">
                 <label for="product_image">Product Image</label>
-                <input type="file" class="form-control">
+                <input type="file" @change="uploadImage" class="form-control">
               </div>
               </div>
 
@@ -117,6 +117,7 @@
 <script>
 import { VueEditor } from "vue2-editor";
 import { fb, db } from "../firebase.js";
+import { storage } from 'firebase';
 export default {
   name: "Products",
   props: {
@@ -132,11 +133,12 @@ export default {
         name: null,
         description: null,
         price: null,
-        tag: null,
+        tags: [],
         image: null
       },
       activeItem: null,
-      modal: null
+      modal: null,
+      tag: null
     };
   },
   firestore(){
@@ -145,6 +147,31 @@ export default {
     }
   },
   methods: {
+    addTag(){
+      this.product.tags.push(this.tag);
+      this.tag = "";
+    },
+    uploadImage(e){
+      let file = e.target.files[0];
+
+      var storageRef = fb.storage().ref('products/'+ file.name);
+
+      let uploadTask = storageRef.put(file);
+
+      console.log(e.target.files[0]);
+
+      uploadTask.on('state_changed', (snapshot) => {
+      }, (error) => {
+      // Handle unsuccessful uploads
+      }, () => {
+        // Handle successful uploads on complete
+        // For instance, get the download URL: https://firebasestorage.googleapis.com/...
+        uploadTask.snapshot.ref.getDownloadURL().then((downloadURL) => {
+          this.product.image = downloadURL;
+          console.log('File available at', downloadURL);
+        });
+      });
+    },
     addNew(){
       this.modal = 'new';
       $('#product').modal('show');
