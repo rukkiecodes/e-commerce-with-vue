@@ -61,7 +61,7 @@
                                 <span style="float : left; position: relative; left: 10px; top: 5px;">Products</span>
                             </router-link>
                         </li>
-                        
+
                         <li>
                             <router-link to="/admin/orders">
                                 <i class="fa fa-shopping-cart"></i>
